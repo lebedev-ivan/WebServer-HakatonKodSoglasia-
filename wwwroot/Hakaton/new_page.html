@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Логотип и таблица</title>
+    <style>
+      /* Ваши стили остаются без изменений */
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #fffefe;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        margin-top: 50px;
+      }
+
+      .logo {
+        width: 1500px;
+        height: auto;
+        margin: 0 auto;
+      }
+
+      .button-container {
+        margin-bottom: 20px;
+      }
+
+      button {
+        background-color: #607d8b; /* Blue-gray color */
+        color: white; /* White text */
+        border: none; /* No border */
+        border-radius: 0; /* No rounded corners */
+        padding: 10px 20px; /* Add some padding */
+        cursor: pointer; /* Change cursor on hover */
+        transition: background-color 0.3s; /* Smooth transition for background */
+      }
+
+      button:hover {
+        background-color: red; /* Red background on hover */
+      }
+
+      /* Modal Window Styles */
+      .modal {
+        background-color: #455a64; /* Gray-blue color */
+        color: white; /* White text */
+        padding: 20px; /* Padding for the modal */
+        border-radius: 0; /* No rounded corners for modal */
+      }
+
+      /* Optional: Add styles for modal header, footer if needed */
+      .modal-header,
+      .modal-footer {
+        background-color: #546e7a; /* Slightly different gray-blue */
+        color: white; /* White text */
+      }
+
+      .modal-content {
+        padding: 20px;
+        overflow: hidden;
+      }
+
+      .table-container {
+        overflow-y: auto;
+        overflow-x: auto; /* Добавляем горизонтальный скролл */
+        max-height: 60vh;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ddd;
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 2px;
+        border: 1px solid #ddd;
+        text-align: center;
+        height: 15px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      th {
+        background-color: #607d8b; /* Сине-серый цвет для заголовка */
+        color: white;
+        cursor: pointer;
+      }
+
+      tr:nth-child(odd) {
+        background-color: white; /* Белые строки */
+        color: rgb(0, 0, 0); /* Черный текст для белых строк */
+      }
+
+      tr:nth-child(even) {
+        background-color: #d2d2d2; /* Темно-серый цвет для четных строк */
+        color: rgb(0, 0, 0); /* Белый текст для темно-серых строк */
+      }
+
+      tr:hover {
+        background-color: #ddd;
+      }
+
+      .close {
+        cursor: pointer;
+        float: right;
+        margin-right: 15px;
+        font-size: 18px;
+      }
+
+      .traffic-light {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img src="pTQELsN3_1727464554.png" alt="Логотип компании" class="logo" />
+
+      <div class="button-container">
+          <button class="button" onclick="exportToExcel()">Экспорт</button>
+          <button class="button" onclick="groupingOptions()">Группировка</button>
+          <button class="button" onclick="searchProjects()">Поиск</button>
+          <button class="button" onclick="resetToDefault()">Домик</button>
+          <button class="button" onclick="showGeneralInfo()">
+              Общая информация
+          </button>
+          <button class="button" onclick="showProjectStatus()">Состояние</button>
+          <button class="button" onclick="showProjectTeam()">
+              Команда проекта
+          </button>
+          <button class="button" onclick="showProjectTimeline()">Сроки</button>
+          <button class="button" onclick="goBack()">Назад</button>
+          <!-- Кнопка возврата -->
+      </div>
+    </div>
+
+    <div id="excelModal" class="modal">
+      <div class="modal-header">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Таблица данных</h2>
+      </div>
+      <div class="modal-content">
+        <div class="table-container">
+          <table id="excelTable">
+            <thead>
+              <tr id="tableHeader"></tr>
+            </thead>
+            <tbody id="excelData"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        function goBack() {
+            window.history.back(); // Возврат на предыдущую страницу
+        }
+        const excelFileUrl = "Пример базового файла.xlsx"; // Путь к вашему файлу
+        let jsonData = []; // Переменная для хранения данных из Excel
+        let currentView = "default"; // Переменная для хранения текущего вида таблицы
+        let originalData = []; // Переменная для хранения исходных данных
+
+        async function loadExcelFromUrl(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.arrayBuffer();
+                const workbook = XLSX.read(data, { type: "array" });
+
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+
+                jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                originalData = jsonData.slice(); // Сохраняем оригинальные данные
+
+                const tableHeader = document.getElementById("tableHeader");
+                const tableBody = document.getElementById("excelData");
+                tableHeader.innerHTML = "";
+                tableBody.innerHTML = "";
+
+                if (jsonData.length) {
+                    const headers = jsonData[1]; // Заголовки во второй строке
+                    headers.forEach((header) => {
+                        const th = document.createElement("th");
+                        th.textContent = header;
+                        tableHeader.appendChild(th);
+                    });
+                }
+
+                updateTable(jsonData.slice(2)); // Обновляем таблицу данными, начиная с третьей строки
+                openModal();
+            } catch (error) {
+                console.error("Ошибка при загрузке Excel файла:", error);
+            }
+        }
+
+        function updateTable(data) {
+            const tableBody = document.getElementById("excelData");
+            tableBody.innerHTML = "";
+            data.forEach((row) => {
+                const tr = document.createElement("tr");
+                row.forEach((cellData) => {
+                    const td = document.createElement("td");
+                    td.textContent = cellData === undefined ? "" : cellData;
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function exportToExcel() {
+            const isAdmin = localStorage.getItem('isAdmin');
+            if (isAdmin === 'true') {
+                window.location.href = 'http://localhost:5000/api/file/download'; // Прямой переход по URL
+            } else {
+                alert('У вас нет прав для экспорта файла.');
+            }
+        }
+
+      function groupingOptions() {
+        const criteria = prompt(
+          "Введите критерий для группировки (например: Предпроект, Реализация):"
+        );
+        if (criteria) {
+          groupProjects(criteria);
+        }
+      }
+
+      function groupingOptions() {
+        const criteria = prompt(
+          "Введите критерии для группировки через запятую (например: 22, Закрыт):"
+        );
+        if (criteria) {
+          const keywords = criteria.split(",").map((word) => word.trim());
+          const matchedRows = [];
+
+          // Считаем количество совпадений для каждой строки
+          jsonData.slice(3).forEach((row) => {
+            const rowString = row.join(" "); // Преобразуем строку в текст
+            const matchCount = keywords.reduce((count, keyword) => {
+              return count + (rowString.includes(keyword) ? 1 : 0);
+            }, 0);
+
+            // Если есть совпадения, добавляем строку и количество совпадений
+            if (matchCount > 0) {
+              matchedRows.push({ row, matchCount });
+            }
+          });
+
+          // Сортируем по количеству совпадений в порядке убывания
+          matchedRows.sort((a, b) => b.matchCount - a.matchCount);
+
+          // Извлекаем отсортированные строки
+          const sortedMatchedRows = matchedRows.map((item) => item.row);
+          const unmatchedRows = jsonData
+            .slice(3)
+            .filter((row) => !sortedMatchedRows.includes(row));
+
+          // Обновляем таблицу, сначала с соответствующими строками, затем с остальными
+          const combinedData = sortedMatchedRows.concat(unmatchedRows);
+          updateTable([jsonData[1], ...combinedData]); // Добавляем заголовки
+          openModal();
+        }
+      }
+
+      function searchProjects() {
+        const searchTerm = prompt("Введите текст для поиска:");
+        if (searchTerm) {
+          const matchedRows = jsonData.filter((row) =>
+            row.some((cell) =>
+              cell.toString().toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          );
+
+          // Обновляем таблицу с найденными строками
+          const unmatchedRows = jsonData.filter(
+            (row) => !matchedRows.includes(row)
+          );
+          const combinedData = matchedRows.concat(unmatchedRows);
+          updateTable([jsonData[1], ...combinedData]); // Добавляем заголовки
+          openModal();
+        }
+      }
+
+      function resetToDefault() {
+        currentView = "default"; // Сброс к базовому виду
+        updateTable(originalData.slice(2)); // Восстановление оригинальных данных
+      }
+
+      function showGeneralInfo() {
+        const tableHeader = document.getElementById("tableHeader");
+        const tableBody = document.getElementById("excelData");
+
+        // Очищаем заголовки и тело таблицы
+        tableHeader.innerHTML = "";
+        tableBody.innerHTML = "";
+
+        // Выбираем нужные заголовки и их индексы
+        const headers = ["№", "Код", "Наименование проекта", "Статус"];
+        const headerIndexes = [0, 1, 2, 3]; // Индексы нужных столбцов
+
+        // Добавляем заголовки в таблицу из первой строки jsonData (строка 1)
+        headerIndexes.forEach((index) => {
+          const th = document.createElement("th");
+          th.textContent = jsonData[1][index]; // Заголовок из второй строки файла Excel
+          tableHeader.appendChild(th);
+        });
+
+        // Фильтруем данные начиная со второй строки jsonData (строка 2 и далее)
+        const filteredData = jsonData
+          .slice(3)
+          .map((row) => headerIndexes.map((index) => row[index]));
+
+        // Обновляем таблицу с новыми данными
+        filteredData.forEach((row) => {
+          const tr = document.createElement("tr");
+          row.forEach((cellData) => {
+            const td = document.createElement("td");
+            td.textContent = cellData === undefined ? "" : cellData;
+            tr.appendChild(td);
+          });
+          tableBody.appendChild(tr);
+        });
+
+        // Меняем цвет фона второй строки
+        tableBody.querySelector("tr").style.backgroundColor = "lightblue";
+
+        openModal(); // Открываем модальное окно
+      }
+
+      function showProjectStatus() {
+        const tableHeader = document.getElementById("tableHeader");
+        const tableBody = document.getElementById("excelData");
+
+        // Очищаем заголовки и тело таблицы
+        tableHeader.innerHTML = "";
+        tableBody.innerHTML = "";
+
+        // Выбираем нужные заголовки и их индексы
+        const headers = ["№", "Код", "Наименование проекта", "Этап", "Статус"];
+        const headerIndexes = [0, 1, 2, 3, 4]; // Индексы нужных столбцов
+
+        // Добавляем заголовки в таблицу из первой строки jsonData (строка 1)
+        headerIndexes.forEach((index) => {
+          const th = document.createElement("th");
+          th.textContent = jsonData[1][index]; // Заголовок из второй строки файла Excel
+          tableHeader.appendChild(th);
+        });
+
+        // Фильтруем данные начиная со второй строки jsonData (строка 2 и далее)
+        const filteredData = jsonData
+          .slice(3)
+          .map((row) => headerIndexes.map((index) => row[index]));
+
+        // Обновляем таблицу с новыми данными
+        filteredData.forEach((row) => {
+          const tr = document.createElement("tr");
+          row.forEach((cellData) => {
+            const td = document.createElement("td");
+            td.textContent = cellData === undefined ? "" : cellData;
+            tr.appendChild(td);
+          });
+          tableBody.appendChild(tr);
+        });
+
+        // Меняем цвет фона второй строки
+        tableBody.querySelector("tr").style.backgroundColor = "lightgreen";
+
+        openModal(); // Открываем модальное окно
+      }
+
+      function excelDateToJSDate(serial) {
+        const excelStartDate = new Date(1899, 11, 30); // Excel начинает с 30 декабря 1899 года
+        return new Date(excelStartDate.getTime() + serial * 86400000); // Преобразование количества дней в миллисекунды
+      }
+
+      function showProjectTeam() {
+        const tableHeader = document.getElementById("tableHeader");
+        const tableBody = document.getElementById("excelData");
+
+        tableHeader.innerHTML = "";
+        tableBody.innerHTML = "";
+
+        const headers = [
+          "Код проекта",
+          "Наименование проекта",
+          "Этап",
+          "Заказчик",
+          "Руководитель проекта",
+          "ТимЛид",
+          "Бизнес-аналитик",
+        ];
+        const headerIndexes = [2, 3, 4, 21, 23, 24, 25]; // Индексы нужных столбцов
+
+        // Добавляем заголовки в таблицу
+        headerIndexes.forEach((index) => {
+          const th = document.createElement("th");
+          th.textContent = jsonData[1][index]; // Заголовок из второй строки файла Excel
+          tableHeader.appendChild(th);
+        });
+
+        // Фильтруем данные начиная с третьей строки jsonData (строка 2 и далее)
+        const filteredData = jsonData
+          .slice(3)
+          .map((row) => headerIndexes.map((index) => row[index]));
+
+        filteredData.forEach((row, rowIndex) => {
+          const tr = document.createElement("tr");
+          // Устанавливаем цвет фона для второй строки
+          if (rowIndex === 0) {
+            // Теперь первая строка данных
+            tr.style.backgroundColor = "#F5F5DC"; // Бледно-бежевый цвет
+          }
+
+          row.forEach((cellData) => {
+            const td = document.createElement("td");
+            td.textContent = cellData === undefined ? "" : cellData;
+            tr.appendChild(td);
+          });
+
+          tableBody.appendChild(tr);
+        });
+
+        currentView = "team"; // Установка текущего вида
+      }
+      function excelDateToJSDate(serial) {
+        const excelStartDate = new Date(1899, 11, 30); // Excel начинает с 30 декабря 1899 года
+        return new Date(excelStartDate.getTime() + serial * 86400000); // Преобразование количества дней в миллисекунды
+      }
+
+      // Функция для расчета разницы в месяцах между двумя датами
+      function calculateMonthsBetween(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const months =
+          (end.getFullYear() - start.getFullYear()) * 12 +
+          (end.getMonth() - start.getMonth());
+        return months;
+      }
+
+      function showProjectTimeline() {
+        const tableHeader = document.getElementById("tableHeader");
+        const tableBody = document.getElementById("excelData");
+
+        // Очищаем заголовки и тело таблицы
+        tableHeader.innerHTML = "";
+        tableBody.innerHTML = "";
+
+        // Заголовки для сроков
+        const headers = [
+          "№",
+          "Код",
+          "Наименование проекта",
+          "Этап",
+          "Начало (текущие)",
+          "Завершение (текущие)",
+          "Длительность",
+          "Начало (базовое)",
+          "Завершение (базовое)",
+          "Отклонение",
+        ];
+        const headerIndexes = [2, 3, 4, 38, 39, 40, 41, 42, 43]; // Индексы нужных столбцов
+
+        // Добавляем заголовки в таблицу
+        headers.forEach((header) => {
+          const th = document.createElement("th");
+          th.textContent = header; // Заголовок
+          tableHeader.appendChild(th);
+        });
+
+        // Получаем данные по срокам
+        const filteredData = jsonData
+          .slice(3) // Начинаем со второй строки
+          .map((row) => headerIndexes.map((index) => row[index]));
+
+        // Обновляем таблицу с новыми данными
+        filteredData.forEach((row, rowIndex) => {
+          const tr = document.createElement("tr");
+
+          // Добавляем номер строки
+          const numberCell = document.createElement("td");
+          numberCell.textContent = rowIndex + 1; // Нумерация с 1
+          tr.appendChild(numberCell);
+
+          row.forEach((cellData, index) => {
+            const td = document.createElement("td");
+
+            // Преобразуем даты для столбцов 38, 39, 41 и 42
+            if ([3, 4, 6, 7].includes(index)) {
+              // Индексы колонок 38, 39, 41, 42
+              const date =
+                cellData !== undefined ? excelDateToJSDate(cellData) : "";
+              td.textContent = date ? date.toLocaleDateString("ru-RU") : "";
+            } else if (index === headerIndexes.length - 1) {
+              // Если это колонка "Отклонение" (индекс 43)
+              td.textContent = cellData === undefined ? "" : cellData; // Отображаем значение из Excel
+
+              const light = document.createElement("span");
+              light.classList.add("traffic-light");
+
+              // Логика светофора
+              if (cellData === undefined) {
+                light.style.backgroundColor = "green"; // Пустые ячейки
+              } else if (typeof cellData === "number") {
+                if (cellData < 0) {
+                  light.style.backgroundColor = "green"; // < 0
+                } else if (cellData === 0) {
+                  light.style.backgroundColor = "yellow"; // = 0
+                } else {
+                  light.style.backgroundColor = "red"; // > 0
+                }
+              }
+              light.style.marginLeft = "10px"; // Отступ для кружочка
+              light.style.display = "inline-block"; // Убедитесь, что кружок отображается
+              light.style.width = "10px"; // Устанавливаем ширину кружка
+              light.style.height = "10px"; // Устанавливаем высоту кружка
+              light.style.borderRadius = "50%"; // Делаем кружок кругом
+              light.style.position = "absolute"; // Позволяем позиционировать кружок
+              light.style.right = "5px"; // Устанавливаем положение кружка справа
+              light.style.top = "50%"; // Центрируем по вертикали
+              light.style.transform = "translateY(-50%)"; // Центрируем по вертикали
+
+              td.style.position = "relative"; // Позволяем позиционирование внутри ячейки
+              td.appendChild(light); // Добавляем светофор
+            } else {
+              // Заполняем другие ячейки
+              td.textContent = cellData === undefined ? "" : cellData;
+            }
+
+            tr.appendChild(td);
+          });
+          tableBody.appendChild(tr);
+        });
+
+        // Меняем цвет фона первой строки данных, если есть строки
+        if (tableBody.rows.length > 0) {
+          tableBody.rows[0].style.backgroundColor = "lightgray"; // Меняем фон первой строки данных
+        }
+
+        openModal(); // Открываем модальное окно
+      }
+
+      function openModal() {
+        document.getElementById("excelModal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("excelModal").style.display = "none";
+      }
+
+      // Загружаем данные из Excel при загрузке страницы
+      window.onload = () => {
+        loadExcelFromUrl(excelFileUrl);
+      };
+    </script>
+  </body>
+</html>

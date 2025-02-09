@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .logo {
+            width: 1500px; /* Изменено для улучшения отображения */
+            height: auto;
+            margin: 0 auto;
+        }
+
+        .login-form {
+            margin-top: 30px;
+        }
+
+            .login-form input {
+                padding: 10px;
+                margin: 5px;
+                border: 1px solid #ccc;
+                border-radius: 2px;
+                width: 200px;
+            }
+
+        .login-button {
+            background-color: #54595f; /* Цвет кнопки */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+        }
+
+            .login-button:hover {
+                background-color: #970303; /* Цвет кнопки при наведении */
+            }
+
+        .message {
+            color: red; /* Цвет сообщения об ошибке */
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="pTQELsN3_1727464554.png" alt="Логотип компании" class="logo" />
+
+        <div class="login-form">
+            <input type="password" v-model="adminPassword" placeholder="Пароль администратора" />
+            <button class="login-button" @click="loginAsAdmin">Войти как администратор</button>
+            <p class="message">{{ adminMessage }}</p>
+
+            <button class="login-button" @click="loginAsUser">Войти как пользователь</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        var app = new Vue({
+            el: '.container',
+            data: {
+                adminPassword: '',
+                adminMessage: '',
+            },
+            methods: {
+                loginAsAdmin() {
+                    if (this.adminPassword === 'admin') {
+                        this.adminMessage = 'Успешный вход!';
+                        localStorage.setItem('isAdmin', 'true'); // Устанавливаем флаг администратора
+                        setTimeout(() => {
+                            window.location.href = 'index.html'; // Перенаправление на index.html
+                        }, 1000);
+                    } else {
+                        this.adminMessage = 'Неправильный пароль!';
+                    }
+                },
+                loginAsUser() {
+                    localStorage.setItem('isAdmin', 'false'); // Убедитесь, что пользователь не администратор
+                    window.location.href = 'index.html'; // Перенаправление на index.html
+                }
+            }
+        });
+    </script>
+</body>
+</html>

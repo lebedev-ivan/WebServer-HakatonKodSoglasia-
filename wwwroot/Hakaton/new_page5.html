@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Форма проекта</title>
+    <style>
+        /* Стили для body */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        /* Стили контейнера */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            max-height: 80vh;
+            padding: 20px;
+            margin-top: 50px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            overflow: auto;
+            text-align: center;
+        }
+
+        /* Стили для заголовка */
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #293949;
+        }
+
+        /* Стили для формы */
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Две равные колонки */
+            column-gap: 20px; /* Промежуток между колонками */
+            row-gap: 10px; /* Промежуток между строками */
+            width: 100%;
+            justify-items: start; /* Выравнивание содержимого по левому краю */
+        }
+
+
+        /* Стили для меток */
+        label {
+            margin-bottom: 0;
+            font-size: 16px;
+            text-align: left;
+            width: 100%;
+        }
+
+        /* Стили для полей ввода */
+        input[type="text"] {
+            padding: 10px;
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            text-align: left;
+            margin-top: 5px;
+        }
+
+        /* Стили для кнопки */
+        .button {
+            grid-column: span 2; /* Кнопка занимает 2 колонки */
+            padding: 15px 30px;
+            background-color: #293949;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+            justify-self: center;
+            margin-top: 20px;
+        }
+
+            .button:hover {
+                background-color: #970303;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Добавить проект</h1>
+        <form id="projectForm">
+            <label for="portfolioYear">В портфеле года:</label>
+            <input type="text" id="portfolioYear" name="PortfolioYear">
+
+            <label for="status">Статус:</label>
+            <input type="text" id="status" name="Status">
+
+            <label for="code">Код:</label>
+            <input type="text" id="code" name="Code">
+
+            <label for="projectName">Наименование проекта:</label>
+            <input type="text" id="projectName" name="ProjectName">
+
+            <label for="stage">Этап:</label>
+            <input type="text" id="stage" name="Stage">
+
+            <label for="priority">Приоритет:</label>
+            <input type="text" id="priority" name="Priority">
+
+            <label for="postProjectMonitoring">Постпроектный мониторинг:</label>
+            <input type="text" id="postProjectMonitoring" name="PostProjectMonitoring">
+
+            <label for="activityDirection">Направление деятельности:</label>
+            <input type="text" id="activityDirection" name="ActivityDirection">
+
+            <label for="category">Категория:</label>
+            <input type="text" id="category" name="Category">
+
+            <label for="program">Программа:</label>
+            <input type="text" id="program" name="Program">
+
+            <label for="strategyAffiliation">Принадлежность к стратегии:</label>
+            <input type="text" id="strategyAffiliation" name="StrategyAffiliation">
+
+            <label for="rgT">RGT:</label>
+            <input type="text" id="rgT" name="RgT">
+
+            <label for="shortDescription">Краткое описание:</label>
+            <input type="text" id="shortDescription" name="ShortDescription">
+
+            <label for="dependencies">Зависимости:</label>
+            <input type="text" id="dependencies" name="Dependencies">
+
+            <label for="realizationPercentage">Процент реализации:</label>
+            <input type="text" id="realizationPercentage" name="RealizationPercentage">
+
+            <label for="overallStatus">Общий статус:</label>
+            <input type="text" id="overallStatus" name="OverallStatus">
+
+            <label for="businessGoals">Бизнес-цели:</label>
+            <input type="text" id="businessGoals" name="BusinessGoals">
+
+            <label for="timelines">Сроки:</label>
+            <input type="text" id="timelines" name="Timelines">
+
+            <label for="budget">Бюджет:</label>
+            <input type="text" id="budget" name="Budget">
+
+            <label for="content">Содержание:</label>
+            <input type="text" id="content" name="Content">
+
+            <label for="reportLink">Ссылка на отчет:</label>
+            <input type="text" id="reportLink" name="ReportLink">
+
+            <label for="customer">Заказчик:</label>
+            <input type="text" id="customer" name="Customer">
+
+            <label for="mpi">MPI:</label>
+            <input type="text" id="mpi" name="Mpi">
+
+            <label for="projectManager">Руководитель проекта:</label>
+            <input type="text" id="projectManager" name="ProjectManager">
+
+            <label for="teamLead">Тимлид:</label>
+            <input type="text" id="teamLead" name="TeamLead">
+
+            <label for="businessAnalyst">Бизнес-аналитик:</label>
+            <input type="text" id="businessAnalyst" name="BusinessAnalyst">
+
+            <label for="ukComposition">Состав УК:</label>
+            <input type="text" id="ukComposition" name="UkComposition">
+
+            <label for="interestedDepartments">Заинтересованные подразделения:</label>
+            <input type="text" id="interestedDepartments" name="InterestedDepartments">
+
+            <label for="externalPersons">Внешние лица:</label>
+            <input type="text" id="externalPersons" name="ExternalPersons">
+
+            <label for="programManager">Руководитель программы:</label>
+            <input type="text" id="programManager" name="ProgramManager">
+
+            <label for="cfo">ЦФО:</label>
+            <input type="text" id="cfo" name="Cfo">
+
+            <label for="businessLines">Линии бизнеса:</label>
+            <input type="text" id="businessLines" name="BusinessLines">
+
+            <label for="startPP">Начало ПП:</label>
+            <input type="text" id="startPP" name="StartPP">
+
+            <label for="currentCompletionPP">Текущее/фактическое завершение ПП:</label>
+            <input type="text" id="currentCompletionPP" name="CurrentCompletionPP">
+
+            <label for="durationMonths">Длительность (мес):</label>
+            <input type="text" id="durationMonths" name="DurationMonths">
+
+            <label for="completionApplicationPP">Завершение по заявке на ПП:</label>
+            <input type="text" id="completionApplicationPP" name="CompletionApplicationPP">
+
+            <label for="deviationApplicationDays">Отклонение от заявки (дней):</label>
+            <input type="text" id="deviationApplicationDays" name="DeviationApplicationDays">
+
+            <label for="start">Начало:</label>
+            <input type="text" id="start" name="Start">
+
+            <label for="completion">Завершение:</label>
+            <input type="text" id="completion" name="Completion">
+
+            <label for="durationMonths2">Длительность (мес):</label>
+            <input type="text" id="durationMonths2" name="DurationMonths2">
+
+            <label for="start2">Начало:</label>
+            <input type="text" id="start2" name="Start2">
+
+            <label for="completion2">Завершение:</label>
+            <input type="text" id="completion2" name="Completion2">
+
+            <label for="deviationDays">Отклонение (дней):</label>
+            <input type="text" id="deviationDays" name="DeviationDays">
+
+            <label for="completionPassport">Завершение по паспорту:</label>
+            <input type="text" id="completionPassport" name="CompletionPassport">
+
+            <label for="deviationPassportDays">Отклонение от паспорта (дней):</label>
+            <input type="text" id="deviationPassportDays" name="DeviationPassportDays">
+
+            <label for="startYear">Год начала реализации:</label>
+            <input type="text" id="startYear" name="StartYear">
+
+            <label for="completionYear">Год завершения:</label>
+            <input type="text" id="completionYear" name="CompletionYear">
+
+            <label for="profitability">Доходность:</label>
+            <input type="text" id="profitability" name="Profitability">
+
+            <label for="capexExternal">CAPEX (внешний):</label>
+            <input type="text" id="capexExternal" name="CapexExternal">
+
+            <label for="fotCapex">CAPEX ФОТ:</label>
+            <input type="text" id="fotCapex" name="FotCapex">
+
+            <label for="opex">OPEX:</label>
+            <input type="text" id="opex" name="Opex">
+
+            <label for="actualCapexExternal">Фактический CAPEX (внешний):</label>
+            <input type="text" id="actualCapexExternal" name="ActualCapexExternal">
+
+            <label for="deltaPercentage">Δ %:</label>
+            <input type="text" id="deltaPercentage" name="DeltaPercentage">
+
+            <label for="capexExternal2">CAPEX (внешний):</label>
+            <input type="text" id="capexExternal2" name="CapexExternal2">
+
+            <label for="fotCapex2">ФОТ (capex):</label>
+            <input type="text" id="fotCapex2" name="FotCapex2">
+
+            <label for="opex2">OPEX:</label>
+            <input type="text" id="opex2" name="Opex2">
+
+            <label for="deltaCapexExternal">CAPEX (внешний):</label>
+            <input type="text" id="deltaCapexExternal" name="DeltaCapexExternal">
+
+            <label for="deltaPercentage2">ФОТ (capex):</label>
+            <input type="text" id="deltaPercentage2" name="DeltaPercentage2">
+
+            <label for="capexExternal3">OPEX:</label>
+            <input type="text" id="capexExternal3" name="CapexExternal3">
+
+            <label for="fotCapex3">Δ CAPEX (внешний):</label>
+            <input type="text" id="fotCapex3" name="FotCapex3">
+
+            <label for="opex3">Δ %:</label>
+            <input type="text" id="opex3" name="Opex3">
+
+            <label for="deltaCapexExternal2">CAPEX (внешний):</label>
+            <input type="text" id="deltaCapexExternal2" name="DeltaCapexExternal2">
+
+            <label for="deltaPercentage3">ФОТ (capex):</label>
+            <input type="text" id="deltaPercentage3" name="DeltaPercentage3">
+
+            <label for="decisionStartPreProject">OPEX:</label>
+            <input type="text" id="decisionStartPreProject" name="DecisionStartPreProject">
+
+            <label for="decisionStartImplementation">Δ CAPEX (внешний):</label>
+            <input type="text" id="decisionStartImplementation" name="DecisionStartImplementation">
+
+            <label for="timelines2">Δ %:</label>
+            <input type="text" id="timelines2" name="Timelines2">
+
+            <label for="reasonZNI_S">Решение о начале предпроекта:</label>
+            <input type="text" id="reasonZNI_S" name="ReasonZNI_S">
+
+            <label for="budget2">Решение о начале реализации:</label>
+            <input type="text" id="budget2" name="Budget2">
+
+            <label for="reasonZNI_B">Сроки:</label>
+            <input type="text" id="reasonZNI_B" name="ReasonZNI_B">
+
+            <label for="content2">Причина ЗНИ Сроки:</label>
+            <input type="text" id="content2" name="Content2">
+
+            <label for="reasonZNI_C">Бюджет:</label>
+            <input type="text" id="reasonZNI_C" name="ReasonZNI_C">
+
+            <label for="conclusion">Причина ЗНИ Бюджет:</label>
+            <input type="text" id="conclusion" name="Conclusion">
+
+            <label for="creator">Содержание:</label>
+            <input type="text" id="creator" name="Creator">
+
+            <label for="comment">Причина ЗНИ Содержание:</label>
+            <input type="text" id="comment" name="Comment">
+
+            <label for="responsibility">Решение о приостановке/возобновлении:</label>
+            <input type="text" id="responsibility" name="Responsibility">
+
+            <label for="decisionCompletionClosure">Причина приостановки:</label>
+            <input type="text" id="decisionCompletionClosure" name="DecisionCompletionClosure">
+
+            <label for="reasonSuspension">Решение о завершении/закрытии:</label>
+            <input type="text" id="reasonSuspension" name="ReasonSuspension">
+
+            <label for="reasonClosureCancellation">Причина закрытия (отмены):</label>
+            <input type="text" id="reasonClosureCancellation" name="ReasonClosureCancellation">
+
+            <label for="projectProduct">Продукт проекта:</label>
+            <input type="text" id="projectProduct" name="ProjectProduct">
+
+            <label for="implementationCriteria">Критерии реализации:</label>
+            <input type="text" id="implementationCriteria" name="ImplementationCriteria">
+
+            <label for="goalsStatus">Статус целей:</label>
+            <input type="text" id="goalsStatus" name="GoalsStatus">
+
+            <label for="projectBusinessGoals">Бизнес-цели проекта:</label>
+            <input type="text" id="projectBusinessGoals" name="ProjectBusinessGoals">
+
+            <label for="achievementCriteria">Критерии достижения:</label>
+            <input type="text" id="achievementCriteria" name="AchievementCriteria">
+
+            <label for="businessGoalsStatus">Статус бизнес-целей:</label>
+            <input type="text" id="businessGoalsStatus" name="BusinessGoalsStatus">
+
+            <label for="monitoringSign">Признак мониторинга:</label>
+            <input type="text" id="monitoringSign" name="MonitoringSign">
+
+            <label for="monitoringStatus">Статус мониторинга:</label>
+            <input type="text" id="monitoringStatus" name="MonitoringStatus">
+
+            <label for="monitoringStatus">Год завершения мониторинга:</label>
+            <input type="text" id="yearMonitoringStatus" name="YearMonitoringStatus">
+
+            <label for="monitoringStatus">Продукт:</label>
+            <input type="text" id="product24" name="Product24">
+
+            <label for="monitoringStatus">Менеджер продукта:</label>
+            <input type="text" id="menegerProduct24" name="MenegerProduct24">
+
+            <label for="monitoringStatus">Характеристика проекта:</label>
+            <input type="text" id="haracter" name="Haracter">
+
+            <label for="shortName">Краткое наименование:</label>
+            <input type="text" id="shortName" name="ShortName">
+
+            <button type="submit" class="button">Добавить проект</button>
+        </form>
+    </div>
+
+    <script>document.getElementById("projectForm").addEventListener("submit", async function (event) {
+            event.preventDefault(); // Останавливаем стандартное поведение формы
+
+            const formData = new FormData(this); // Собираем данные формы
+
+            try {
+                const response = await fetch('/api/project/updateexcel', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.text(); // Получаем текст ответа
+                alert(result); // Отображаем результат
+            } catch (error) {
+                alert("Произошла ошибка: " + error.message);
+            }
+        });</script>
+</body>
+</html>

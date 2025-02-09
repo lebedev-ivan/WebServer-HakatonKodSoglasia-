@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Vue App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .logo {
+            width: 1500px;
+            height: auto;
+            margin: 0 auto;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #293949; /* Синий цвет */
+            color: white;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+        }
+
+            .button:hover {
+                background-color: #970303; /* Темнее на наведение */
+            }
+
+        .big-button-container {
+            margin-top: 40px;
+        }
+
+        .big-button {
+            display: inline-block;
+            background-color: #54595f; /* Синий цвет */
+            color: white;
+            padding: 20px 40px;
+            margin: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            text-align: center;
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+        }
+
+            .big-button:hover {
+                background-color: #970303; /* Темнее на наведение */
+            }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <div class="container">
+        <img src="pTQELsN3_1727464554.png" alt="Логотип компании" class="logo" />
+
+        <div class="button-container">
+            <button class="button" onclick="window.location.href='index.html'">Главная</button>
+            <button class="button" onclick="window.location.href='new_page.html'">Реестр проектов</button>
+            <button class="button" onclick="window.location.href='new_page4.html'">Библиотека</button>
+            <button class="button" onclick="openMonitoringModal()">Мониторинг</button>
+
+            <!-- Модальное окно для мониторинга -->
+            <div id="monitoringModal" style="display: none;">
+                <h2>Мониторинг сессий</h2>
+                <table id="sessionsTable">
+                    <thead>
+                        <tr>
+                            <th>Пользователь</th>
+                            <th>Время начала сессии</th>
+                            <th>Время окончания сессии</th>
+                            <th>Длительность (секунды)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Данные будут добавлены здесь динамически -->
+                    </tbody>
+                </table>
+                <button onclick="downloadCSV()">Скачать CSV</button> <!-- Новая кнопка для скачивания -->
+                <button onclick="closeMonitoringModal()">Закрыть</button>
+            </div>
+
+            <script>
+                // Функция для открытия модального окна мониторинга
+                function openMonitoringModal() {
+                    const modal = document.getElementById('monitoringModal');
+                    const tbody = document.getElementById('sessionsTable').querySelector('tbody');
+                    tbody.innerHTML = ''; // Очищаем предыдущее содержимое
+
+                    // Здесь добавьте код для получения данных сессий из API или другого источника
+                    sessionData.forEach(session => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                                                                                                                            <td>${session.user}</td>
+                                                                                                                            <td>${new Date(session.sessionStart).toLocaleString()}</td>
+                                                                                                                            <td>${session.sessionEnd ? new Date(session.sessionEnd).toLocaleString() : 'Активная'}</td>
+                                                                                                                            <td>${session.duration}</td>
+                                                                                                                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    modal.style.display = 'block'; // Показываем модальное окно
+                }
+
+                // Функция для закрытия модального окна
+                function closeMonitoringModal() {
+                    const modal = document.getElementById('monitoringModal');
+                    modal.style.display = 'none'; // Скрываем модальное окно
+                }
+
+                // Функция для скачивания данных в формате CSV
+                function downloadCSV() {
+                    const rows = [];
+                    const headers = ['Пользователь', 'Время начала сессии', 'Время окончания сессии', 'Длительность (секунды)'];
+
+                    // Добавляем заголовки в CSV
+                    rows.push(headers.join(','));
+
+                    // Добавляем данные сессий в CSV
+                    sessionData.forEach(session => {
+                        const row = [
+                            session.user,
+                            new Date(session.sessionStart).toLocaleString(),
+                            session.sessionEnd ? new Date(session.sessionEnd).toLocaleString() : 'Активная',
+                            session.duration
+                        ];
+                        rows.push(row.join(','));
+                    });
+
+                    // Создаём CSV файл
+                    const csvContent = 'data:text/csv;charset=utf-8,' + rows.join('\n');
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement('a');
+                    link.setAttribute('href', encodedUri);
+                    link.setAttribute('download', 'sessions.csv');
+                    document.body.appendChild(link); // Добавляем ссылку в документ
+
+                    link.click(); // Имитируем клик по ссылке для скачивания
+                    document.body.removeChild(link); // Удаляем ссылку из документа
+                }
+            </script>
+
+            <style>
+                #monitoringModal {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: white;
+                    border: 1px solid #ccc;
+                    padding: 20px;
+                    z-index: 1000;
+                }
+
+                #sessionsTable {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+
+                    #sessionsTable th, #sessionsTable td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }
+            </style>
+
+
+            <button class="button" onclick="openAccessControlModal()">Управление порталом</button>
+
+            <!-- Модальное окно для управления доступом -->
+            <div id="accessControlModal" style="display:none;">
+                <h2>Управление доступом</h2>
+                <label>
+                    <input type="checkbox" id="exportLogsAccess"> Разрешить экспорт логов
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" id="attendanceAccess"> Разрешить доступ к посещаемости
+                </label>
+                <br>
+                <button class="button" onclick="saveAccessSettings()">Сохранить настройки</button>
+                <button class="button" onclick="closeAccessControlModal()">Закрыть</button>
+            </div>
+
+            <script>
+                // Инициализируем доступ к кнопкам на основе статуса администратора
+                const isAdmin = localStorage.getItem('isAdmin');
+
+                // Если пользователь администратор, активируем кнопки доступа
+                if (isAdmin === 'true') {
+                    document.getElementById('exportLogs').disabled = false; // Разрешаем использование кнопки экспорта логов
+                    document.getElementById('attendanceButton').disabled = false; // Разрешаем использование кнопки посещаемости
+
+                    // Устанавливаем состояние флажков
+                    document.getElementById('exportLogsAccess').checked = true;
+                    document.getElementById('attendanceAccess').checked = true;
+                }
+
+                // Функция для открытия модального окна
+                function openAccessControlModal() {
+                    document.getElementById('accessControlModal').style.display = 'block';
+
+                    // Загружаем текущие настройки доступа
+                    document.getElementById('exportLogsAccess').checked = !document.getElementById('exportLogs').disabled;
+                    document.getElementById('attendanceAccess').checked = !document.getElementById('attendanceButton').disabled;
+                }
+
+                // Функция для закрытия модального окна
+                function closeAccessControlModal() {
+                    document.getElementById('accessControlModal').style.display = 'none';
+                }
+
+                // Функция для сохранения настроек доступа
+                function saveAccessSettings() {
+                    document.getElementById('exportLogs').disabled = !document.getElementById('exportLogsAccess').checked;
+                    document.getElementById('attendanceButton').disabled = !document.getElementById('attendanceAccess').checked;
+
+                    closeAccessControlModal();
+                }
+            </script>
+
+            <div class="big-button-container">
+                <button class="big-button" id="importProjectButton"
+                        onclick="window.location.href='new_page5.html'"
+                        disabled>
+                    Импортировать проект
+                </button>
+
+                <script>
+                    // Проверяем статус администратора для кнопки "Импортировать проект"
+                    if (isAdmin === 'true') {
+                        document.getElementById('importProjectButton').disabled = false; // Разрешаем использование кнопки "Импортировать проект"
+                    }
+                </script>
+                <button class="big-button" onclick="window.location.href='login.html'">Права доступа</button>
+                <button id="attendanceButton" class="big-button" disabled>Посещаемость портала</button>
+
+                <script>
+                    // Пример данных о сессиях
+                    const sessionData = [
+                        { user: 'Пользователь 1', sessionStart: '2024-10-04T23:26:02.180Z', sessionEnd: '2024-10-04T23:26:14.615Z', duration: 12.435 },
+                        { user: 'Пользователь 2', sessionStart: '2024-10-04T23:30:00.000Z', sessionEnd: '2024-10-04T23:32:00.000Z', duration: 120 },
+                        // Добавьте дополнительные данные сессий по необходимости
+                    ];
+
+                    // Функция для конвертации данных сессий в CSV формат
+                    function convertToCSV(data) {
+                        const header = ['User', 'Session Start', 'Session End', 'Duration (seconds)'];
+                        const rows = data.map(session => [session.user, session.sessionStart, session.sessionEnd, session.duration].join(','));
+                        return [header.join(','), ...rows].join('\n');
+                    }
+
+                    // Функция для экспорта данных в CSV файл
+                    function exportAttendanceToCSV() {
+                        const csvContent = convertToCSV(sessionData);
+                        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'attendance.csv'; // Название файла
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    }
+
+                    // Проверяем статус администратора
+                    if (isAdmin === 'true') {
+                        document.getElementById('attendanceButton').disabled = false; // Разрешаем использование кнопки
+                    }
+
+                    // Обработчик нажатия на кнопку
+                    document.getElementById('attendanceButton').addEventListener('click', exportAttendanceToCSV);
+                </script>
+                <button id="exportLogs" class="big-button" disabled>Экспортировать логи</button>
+                <script>
+                    let sessionStartTime = new Date();
+                    let logs = [];
+
+                    // Получаем информацию о User Agent и IP-адресе (IP можно через API)
+                    let userAgent = navigator.userAgent;
+                    let ipAddress = "127.0.0.1"; // Для примера можно заменить или получить через API
+
+                    // Перехватываем консольные логи
+                    ['log', 'warn', 'error'].forEach(function (method) {
+                        let originalMethod = console[method];
+                        console[method] = function (...args) {
+                            logs.push({ type: method, message: args.join(' '), time: new Date().toISOString() });
+                            originalMethod.apply(console, args);
+                        };
+                    });
+
+                    // Проверка на администратора
+                    const isAdminForExport = localStorage.getItem('isAdmin');
+
+                    // Если пользователь администратор, активируем кнопку
+                    if (isAdminForExport === 'true') {
+                        document.getElementById('exportLogs').disabled = false; // Разрешаем использование кнопки
+                    }
+
+                    // Функция экспорта логов на сервер
+                    async function exportLogsToServer() {
+                        let sessionEndTime = new Date();
+                        let sessionDuration = (sessionEndTime - sessionStartTime) / 1000; // Продолжительность сессии в секундах
+
+                        // Данные для отправки на сервер
+                        let logData = {
+                            sessionStart: sessionStartTime.toISOString(),
+                            sessionEnd: sessionEndTime.toISOString(),
+                            sessionDuration: sessionDuration + " seconds",
+                            ipAddress: ipAddress,
+                            userAgent: userAgent,
+                            logs: logs
+                        };
+
+                        // Отправляем POST запрос на сервер для экспорта логов
+                        const response = await fetch('/api/logs/export', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(logData)
+                        });
+
+                        if (response.ok) {
+                            // Получаем CSV файл и инициируем скачивание
+                            const blob = await response.blob();
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'session_logs.csv'; // Название файла
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                        } else {
+                            console.error('Ошибка при экспорте логов');
+                        }
+                    }
+
+                    // Обработчик нажатия на кнопку экспорта
+                    document.getElementById('exportLogs').addEventListener('click', exportLogsToServer);
+                </script>
+            </div>
+    </div>
+</body>
+</html>

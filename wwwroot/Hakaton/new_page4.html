@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Таблица данных</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #fffefe;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        margin-top: 50px;
+      }
+
+      .logo {
+        width: 1500px;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+      }
+
+      /* Modal Window Styles */
+      .modal {
+        background-color: #455a64; /* Gray-blue color */
+        color: white; /* White text */
+        padding: 20px;
+        max-width: 90%;
+        margin: 0 auto;
+        border-radius: 0; /* No rounded corners for modal */
+        margin-top: 50px;
+      }
+
+      .modal-header {
+        background-color: #546e7a; /* Slightly different gray-blue */
+        color: white;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .modal-content {
+        padding: 20px;
+        overflow: hidden;
+      }
+
+      .table-container {
+        overflow-y: auto;
+        overflow-x: auto;
+        max-height: 60vh;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ddd;
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 2px;
+        border: 1px solid #ddd;
+        text-align: center;
+        height: 15px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      th {
+        background-color: #607d8b; /* Сине-серый цвет для заголовка */
+        color: white;
+      }
+
+      tr:nth-child(odd) {
+        background-color: white; /* Белые строки */
+        color: rgb(0, 0, 0); /* Черный текст для белых строк */
+      }
+
+      tr:nth-child(even) {
+        background-color: #d2d2d2; /* Темно-серый цвет для четных строк */
+        color: rgb(0, 0, 0);
+      }
+
+      tr:hover {
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img src="pTQELsN3_1727464554.png" alt="Логотип компании" class="logo" />
+
+      <div id="excelModal" class="modal">
+        <div class="modal-header">
+          <h2>Таблица данных</h2>
+        </div>
+        <div class="modal-content">
+          <div class="table-container">
+            <table id="excelTable">
+              <thead>
+                <tr id="tableHeader"></tr>
+              </thead>
+              <tbody id="excelData"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+      const excelFileUrl = "Пример базового файла.xlsx"; // Путь к вашему файлу
+      let jsonData = []; // Переменная для хранения данных из Excel
+
+      async function loadExcelFromUrl(url) {
+        try {
+          const response = await fetch(url);
+          const data = await response.arrayBuffer();
+          const workbook = XLSX.read(data, { type: "array" });
+
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+
+          jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+          const tableHeader = document.getElementById("tableHeader");
+          const tableBody = document.getElementById("excelData");
+          tableHeader.innerHTML = "";
+          tableBody.innerHTML = "";
+
+          if (jsonData.length) {
+            const headers = jsonData[1]; // Заголовки во второй строке
+            headers.forEach((header) => {
+              const th = document.createElement("th");
+              th.textContent = header;
+              tableHeader.appendChild(th);
+            });
+          }
+
+          updateTable(jsonData.slice(2)); // Обновляем таблицу данными, начиная с третьей строки
+        } catch (error) {
+          console.error("Ошибка при загрузке Excel файла:", error);
+        }
+      }
+
+      function updateTable(data) {
+        const tableBody = document.getElementById("excelData");
+        tableBody.innerHTML = "";
+        data.forEach((row) => {
+          const tr = document.createElement("tr");
+          row.forEach((cellData) => {
+            const td = document.createElement("td");
+            td.textContent = cellData === undefined ? "" : cellData;
+            tr.appendChild(td);
+          });
+          tableBody.appendChild(tr);
+        });
+      }
+
+      // Загрузка Excel файла при загрузке страницы
+      window.onload = () => {
+        loadExcelFromUrl(excelFileUrl);
+      };
+    </script>
+  </body>
+</html>

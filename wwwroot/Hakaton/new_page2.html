@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Vue App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .logo {
+            width: 1500px;
+            height: auto;
+            margin: 0 auto;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #293949; /* Синий цвет */
+            color: white;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+        }
+
+            .button:hover {
+                background-color: #970303; /* Темнее на наведение */
+            }
+
+        .big-button-container {
+            margin-top: 40px;
+        }
+
+        .big-button {
+            display: inline-block;
+            background-color: #54595f; /* Синий цвет */
+            color: white;
+            padding: 20px 40px;
+            margin: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            text-align: center;
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+        }
+
+            .big-button:hover {
+                background-color: #970303; /* Темнее на наведение */
+            }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <!-- Подключаем файл vue.js -->
+    <script src="js/vue.js"></script>
+
+    <!-- Добавляем ваш код на Vue.js -->
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello Vue!'
+            }
+        });
+    </script>
+
+    <div class="container">
+        <img src="pTQELsN3_1727464554.png" alt="Логотип компании" class="logo" />
+
+        <div class="button-container">
+            <button class="button" onclick="window.location.href='new_page2.html'">Главная</button>
+            <button class="button" onclick="window.location.href='new_page.html'">Реестр проектов</button>
+            <button class="button" onclick="window.location.href='new_page4.html'">Библиотека</button>
+            <button class="button" onclick="window.location.href='new_page3.html'">Мониторинг</button> <!-- исправлено на new_page3.html -->
+            <button class="button" onclick="window.location.href='new_page6.html'">Управление порталом</button>
+        </div>
+
+        <div class="big-button-container">
+            <button class="big-button" id="importProjectButton"
+                    onclick="window.location.href='new_page5.html'"
+                    disabled>
+                Импортировать проект
+            </button>
+            <script>
+                // Проверяем статус администратора
+                const isAdmin = localStorage.getItem('isAdmin');
+
+                // Если пользователь администратор, активируем кнопку
+                if (isAdmin === 'true') {
+                    document.getElementById('importProjectButton').disabled = false; // Разрешаем использование кнопки
+                }
+            </script>
+            <button class="big-button" onclick="window.location.href='new_page3.html'">Главная</button>
+            <button id="exportLogs" class="big-button">Экспортировать логи</button>
+            <script>
+                document.getElementById("exportLogs").addEventListener("click", async function () {
+                    try {
+                        const response = await fetch('/api/logs/export', {
+                            method: 'GET', // Или 'POST', если вы хотите отправить параметры
+                        });
+
+                        if (response.ok) {
+                            const blob = await response.blob();
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'logs.xlsx'; // Имя файла
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                            window.URL.revokeObjectURL(url); // Освобождаем память
+                        } else {
+                            alert("Ошибка при экспорте логов.");
+                        }
+                    } catch (error) {
+                        alert("Произошла ошибка: " + error.message);
+                    }
+                });
+            </script>
+            <button class="big-button">Экспортировать логи</button>
+        </div>
+    </div>
+</body>
+</html>

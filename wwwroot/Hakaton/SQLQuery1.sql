@@ -1,0 +1,6 @@
+CREATE TABLE ActionLogs (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Action NVARCHAR(255) NOT NULL,
+    Timestamp DATETIME NOT NULL,
+    [User] NVARCHAR(255) NOT NULL
+);
